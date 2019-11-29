@@ -26,13 +26,13 @@ class Hdf5Conan(ConanFile):
     }
     default_options = (
         "cxx=True",
-        "shared=False",
+        "shared=True",
         "parallel=False",
         "zlib:shared=False"
     )
     generators = "virtualbuildenv"
     source_subfolder = "source_subfolder"
-    
+
     windows_source_folder = "CMake-hdf5-%s" % version_number
     windows_archive_name = "%s.zip" % windows_source_folder
 
