@@ -56,9 +56,12 @@ class Hdf5Conan(ConanFile):
             tools.get("https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-{0}/hdf5-{1}/src/hdf5-{1}.tar.gz"
                     .format(minor_version, self.version_number))
             os.rename("hdf5-{0}".format(self.version_number), self.source_subfolder)
-        
 
-    def build(self):
+        tools.replace_in_file("%s/configure" % self.source_subfolder, r"-install_name \$rpath/", "-install_name @rpath/")
+
+
+
+def build(self):
         configure_args = [
             "--prefix=",
             "--enable-hl",
