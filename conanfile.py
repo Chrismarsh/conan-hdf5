@@ -61,7 +61,7 @@ class Hdf5Conan(ConanFile):
 
 
 
-def build(self):
+    def build(self):
         configure_args = [
             "--prefix=",
             "--enable-hl",
