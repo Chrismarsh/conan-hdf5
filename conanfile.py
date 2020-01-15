@@ -57,7 +57,8 @@ class Hdf5Conan(ConanFile):
                     .format(minor_version, self.version_number))
             os.rename("hdf5-{0}".format(self.version_number), self.source_subfolder)
 
-        tools.replace_in_file("%s/configure" % self.source_subfolder, r"-install_name \$rpath/", "-install_name @rpath/")
+        if tools.os_info.is_macos and self.options.shared:
+            tools.replace_in_file("%s/configure" % self.source_subfolder, r"-install_name \$rpath/", "-install_name @rpath/")
 
 
 
@@ -133,13 +134,6 @@ class Hdf5Conan(ConanFile):
                 configure_dir=self.source_subfolder,
                 args=configure_args
             )
-
-            if tools.os_info.is_macos and self.options.shared:
-                tools.replace_in_file(
-                    r"./libtool",
-                    r"-install_name \$rpath/\$soname",
-                    r"-install_name @rpath/\$soname"
-                )
 
             env_build.make()
 
