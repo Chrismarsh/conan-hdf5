@@ -1,7 +1,13 @@
-# conan-hdf5
+# hdf5
 
-Conan package for HDF5.
+This is a minimal Conan build of the hdf5 library for use with [CHM](https://github.com/Chrismarsh/CHM). 
 
+Build artifacts are uploaded to [Bintray](https://bintray.com/chrismarsh/CHM)
+
+
+```
+conan install hdf/1.10.5@CHM/stable
+```
 
 ## Executables and shared libraries
 
