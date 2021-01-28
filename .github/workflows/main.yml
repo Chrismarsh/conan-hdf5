@@ -22,7 +22,7 @@ env:
   CONAN_STABLE_BRANCH_PATTERN: "stable/*"
   CONAN_UPLOAD_ONLY_WHEN_STABLE: "1"
   MAKEFLAGS: "-j2"
-  CONAN_REFERENCE: hdf5/${{ matrix.hdf5-version}}
+  
 
 strategy:
   fail-fast: false
@@ -68,6 +68,7 @@ jobs:
           CONAN_GCC_VERSIONS: ${{ matrix.gcc }}
           CC: gcc-${{ matrix.gcc }}
           CXX: g++-${{ matrix.gcc }}
+          CONAN_REFERENCE: hdf5/${{ matrix.hdf5-version}}
 
 
   build-macs:
@@ -101,4 +102,5 @@ jobs:
         env:
           CONAN_CURRENT_PAGE: apple-clang_shared
           CONAN_APPLE_CLANG_VERSIONS: ${{ matrix.apple-clang }}
+          CONAN_REFERENCE: hdf5/${{ matrix.hdf5-version}}
 
