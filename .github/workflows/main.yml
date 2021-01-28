@@ -57,7 +57,7 @@ jobs:
           pip install conan_package_tools
 
       - name: env linux
-        if: matrix.os == 'ubuntu-latest'
+        if: ${{ matrix.cfg.os }} == 'ubuntu-latest'
         uses: allenevans/set-env@v2.0.0
         with:
           CONAN_GCC_VERSIONS: ${{ matrix.cfg.version }}
@@ -65,7 +65,7 @@ jobs:
           CXX: g++-${{ matrix.gcc }}
 
       - name: env macos
-        if: matrix.os == 'macos-latest'
+        if: ${{ matrix.cfg.os }} == 'macos-latest'
         uses: allenevans/set-env@v2.0.0
         with:
           CONAN_APPLE_CLANG_VERSIONS: ${{ matrix.cfg.version }}
