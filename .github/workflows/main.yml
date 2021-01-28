@@ -35,10 +35,10 @@ jobs:
       matrix:
         python-version: [3.8]
         cfg:
-          - {os: ubuntu-latest, compiler: "gcc", version: 7}
-          - {os: ubuntu-latest, compiler: "gcc", version: 8}
-          - {os: ubuntu-latest, compiler: "gcc", version: 9}
-          - {os: macos-latest, compiler: "apple-clang", version: "12.0"}
+          - {os: "ubuntu-latest", compiler: "gcc", version: 7}
+          - {os: "ubuntu-latest", compiler: "gcc", version: 8}
+          - {os: "ubuntu-latest", compiler: "gcc", version: 9}
+          - {os: "macos-latest", compiler: "apple-clang", version: "12.0"}
         hdf5-version: ["1.10.5", "1.12.0"]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -57,15 +57,15 @@ jobs:
           pip install conan_package_tools
 
       - name: env linux
-        if: ${{ matrix.cfg.os }} == 'ubuntu-latest'
+        if: ${{ matrix.cfg.os  == 'ubuntu-latest' }}
         uses: allenevans/set-env@v2.0.0
         with:
           CONAN_GCC_VERSIONS: ${{ matrix.cfg.version }}
-          CC: gcc-${{ matrix.gcc }}
-          CXX: g++-${{ matrix.gcc }}
+          CC: gcc-${{ matrix.cfg.version }}
+          CXX: g++-${{ matrix.cfg.version }}
 
       - name: env macos
-        if: ${{ matrix.cfg.os }} == 'macos-latest'
+        if: ${{ matrix.cfg.os  == 'macos-latest' }}
         uses: allenevans/set-env@v2.0.0
         with:
           CONAN_APPLE_CLANG_VERSIONS: ${{ matrix.cfg.version }}
