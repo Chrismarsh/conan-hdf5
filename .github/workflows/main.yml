@@ -22,12 +22,6 @@ env:
   CONAN_STABLE_BRANCH_PATTERN: "stable/*"
   CONAN_UPLOAD_ONLY_WHEN_STABLE: "1"
   MAKEFLAGS: "-j2"
-  
-
-strategy:
-  fail-fast: false
-  matrix:
-    hdf5-version: ["1.10.5", "1.12.0"]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -40,7 +34,7 @@ jobs:
       matrix:
         python-version: [3.8]
         os: [ubuntu-latest]
-        gcc: [7,8,9]
+
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -80,6 +74,8 @@ jobs:
         python-version: [3.8]
         os: [macos-latest]
         apple-clang: ["12.0"]
+        hdf5-version: ["1.10.5", "1.12.0"]
+        fail-fast: false
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
