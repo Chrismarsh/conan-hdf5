@@ -13,7 +13,6 @@ class Hdf5Conan(ConanFile):
 
     description = "HDF5 C and C++ libraries"
     license = "https://support.hdfgroup.org/ftp/HDF5/releases/COPYING"
-    exports = ["files/CHANGES", "files/HDF5options.cmake"]
     settings = "os", "compiler", "build_type", "arch"
     
     options = {
@@ -33,10 +32,12 @@ class Hdf5Conan(ConanFile):
     def requirements(self):
         self.requires("zlib/[>=1.2]")
 
+
     def configure(self):
         if self.options.cxx and self.options.parallel:
             msg = "The cxx and parallel options are not compatible"
             raise ConfigurationException(msg)
+
 
     def source(self):
         tools.get(**self.conan_data["sources"][self.version])
@@ -49,7 +50,7 @@ class Hdf5Conan(ConanFile):
 
     def build(self):
         configure_args = [
-            "--prefix=",
+            "--prefix=" + self.package_folder,
             "--enable-hl",
             "--disable-sharedlib-rpath"
         ]
@@ -78,8 +79,6 @@ class Hdf5Conan(ConanFile):
             val = os.environ.get("LDFLAGS", "")
             os.environ["LDFLAGS"] = val + " -Wl,-rpath='$$ORIGIN/../lib'"
 
-        os.mkdir("install")
-
         env_build = AutoToolsBuildEnvironment(self)
         env_build.configure(
             configure_dir=self.source_subfolder,
@@ -88,35 +87,27 @@ class Hdf5Conan(ConanFile):
 
         env_build.make()
 
-        cwd = os.getcwd()
-        destdir = os.path.join(cwd, "install")
-        env_build.make(args=["install", "DESTDIR="+destdir])
+        env_build.make(args=["install"])
 
         # The paths in the HDF5 compiler wrapper are hard-coded, so
         # substitute the prefix by a variable named H5CC_PREFIX to be
         # passed to it. The compiler wrapper can be called h5cc or h5pcc.
         if self.options.parallel:
-            hdf5_compiler_wrapper = os.path.join(destdir, "bin", "h5pcc")
+            hdf5_compiler_wrapper = os.path.join(self.package_folder, "bin", "h5pcc")
         else:
-            hdf5_compiler_wrapper = os.path.join(destdir, "bin", "h5cc")
+            hdf5_compiler_wrapper = os.path.join(self.package_folder, "bin", "h5cc")
 
-        tools.replace_in_file(
-            hdf5_compiler_wrapper,
-            'prefix=""',
-            'prefix="$(cd "$( dirname "$0" )" && pwd)/.."'
-        )
+        try:
+            tools.replace_in_file(
+                hdf5_compiler_wrapper,
+                'prefix=""',
+                'prefix="$(cd "$( dirname "$0" )" && pwd)/.."'
+            )
+        except:
+            pass # don't need the patch in later versions
 
         if tools.os_info.is_macos and self.options.shared:
-            self._add_rpath_to_executables(os.path.join(destdir, "bin"))
-
-        os.chdir(self.source_subfolder)
-        os.rename("COPYING_LBNL_HDF5", "LICENSE.hdf5_LBNL")
-        shutil.copyfile(
-        os.path.join(self.source_folder, "files", "CHANGES"),
-        "CHANGES.hdf5")
-
-        os.rename("COPYING", "LICENSE.hdf5")
-        os.chdir(cwd)
+            self._add_rpath_to_executables(os.path.join(self.package_folder, "bin"))
 
     def _add_rpath_to_executables(self, path):
         executables = [
